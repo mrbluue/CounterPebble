@@ -1,0 +1,67 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "valentin@jonckheere.fr",
+    "longName": "Counter",
+    "projectType": "pebblejs",
+    "resources": {
+        "media": [
+            {
+                "file": "images/menu_icon.png",
+                "name": "IMAGE_MENU_ICON",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/logo_splash.png",
+                "name": "IMAGE_LOGO_SPLASH",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/tile_splash.png",
+                "name": "IMAGE_TILE_SPLASH",
+                "type": "bitmap"
+            },
+            {
+                "file": "fonts/UbuntuMono-Regular.ttf",
+                "name": "MONO_FONT_14",
+                "type": "font"
+            },
+            {
+                "file": "images/buttonMenu",
+                "name": "IMAGES_BUTTONMENU",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/buttonLimit",
+                "name": "IMAGES_BUTTONLIMIT",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/buttonNext",
+                "name": "IMAGES_BUTTONNEXT",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/menuIcon",
+                "menuIcon": true,
+                "name": "IMAGES_MENUICON",
+                "type": "bitmap"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Counter",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "2930ef5c-8ecc-41f8-87dc-5e0dd5e70250",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "hiddenApp": false,
+        "watchface": false
+    }
+}
