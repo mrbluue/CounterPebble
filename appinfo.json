@@ -29,18 +29,18 @@
                 "type": "font"
             },
             {
-                "file": "images/buttonNext.png",
-                "name": "IMAGES_BUTTONNEXT_PNG",
+                "file": "images/buttonNext",
+                "name": "IMAGES_BUTTONNEXT",
                 "type": "bitmap"
             },
             {
-                "file": "images/buttonMenu.png",
-                "name": "IMAGES_BUTTONMENU_PNG",
+                "file": "images/buttonMenu",
+                "name": "IMAGES_BUTTONMENU",
                 "type": "bitmap"
             },
             {
-                "file": "images/buttonLimit.png",
-                "name": "IMAGES_BUTTONLIMIT_PNG",
+                "file": "images/buttonLimit",
+                "name": "IMAGES_BUTTONLIMIT",
                 "type": "bitmap"
             },
             {

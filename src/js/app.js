@@ -4,7 +4,7 @@ var Vector2 = require('vector2');
 var limit = 0;
 // Vector2(width, height)
 var main = new UI.Window({
-    backgroundColor: 'white'
+    backgroundColor: 'black'
 });
 var historyText = new UI.Text({
     position: new Vector2(-25, 0), 
@@ -29,18 +29,18 @@ var limitText = new UI.Text({
   });
 
 var historyBttn = new UI.Image({
-  position: new Vector2(120, 0),
-  size: new Vector2(144, 168),
+  position: new Vector2(18, 18),
+  size: new Vector2(18, 18),
   image: 'images/buttonMenu.png'
 });
 var nextBttn = new UI.Image({
   position: new Vector2(120, 60),
-  size: new Vector2(144, 168),
+  size: new Vector2(18, 18),
   image: 'images/buttonNext.png'
 });
 var limitBttn = new UI.Image({
   position: new Vector2(120, 120),
-  size: new Vector2(144, 168),
+  size: new Vector2(18, 18),
   image: 'images/buttonLimit.png'
 });
 
