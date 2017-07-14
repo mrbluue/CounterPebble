@@ -4,7 +4,7 @@ var Vector2 = require('vector2');
 var limit = 0;
 // Vector2(width, height)
 var main = new UI.Window({
-    backgroundColor: 'black'
+    backgroundColor: 'white'
 });
 var historyText = new UI.Text({
     position: new Vector2(-25, 0), 
