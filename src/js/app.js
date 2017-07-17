@@ -55,7 +55,7 @@ function actionCount(action, wind, textfield, radial, textfieldPos, radialPos)
   // Substract to the count when told to. Forbidding to go under 0. If not substracting, then adding.
   if(action == "substract" && count > 0)
     count--;
-  else if (action == "add")
+  else if (action == "add" && count < limit)
     count++;
   
   // If there's no limit (limit = 0) or if there is a limit, show the count without or with the limit
@@ -141,20 +141,37 @@ main.on('click', 'up', function(e) {
       itemIndex++;
     });
   }
-  
-  menu.on('select', function(e) {
-    //TODO Menu from the right to delete (or not) the entry
+
+  menu.on('longSelect', function(e) {
+    historyDate.splice(e.itemIndex, 1);
+    historyCounts.splice(e.itemIndex, 1);
+    Settings.data('historyDate', historyDate);
+    Settings.data('historyCounts', historyCounts);
+    
+    var windConfirm = new UI.Window({backgroundColor: 'black'});
+    var textConfirm = new UI.Text({size: new Vector2(140, 40), font: 'bitham-30-black', text: 'Deleted', textAlign: 'center'});
+    var windSize = menu.size(), textConfirmPos = textConfirm.position().addSelf(windSize).subSelf(textConfirm.size()).multiplyScalar(0.5);
+    textConfirm.position(textConfirmPos);
+    windConfirm.add(textConfirm);
+    windConfirm.show();
+    menu.hide();
+
+    menu.item(0, e.itemIndex, {title: 'Deleted', subtitle: ' '});
+    
+    setTimeout(function(){
+      windConfirm.hide();
+      menu.show();
+    }, 1000);
   });
   menu.show();
 });
 
 // On clicking the select button from main screen
 main.on('click', 'select', function(e) {
-  
   var wind = new UI.Window({backgroundColor: 'black'});
   var textfield = new UI.Text();
   var radial = new UI.Radial();
-
+    
   // if there's no limit
   if(limit == 0)
   {
@@ -164,8 +181,11 @@ main.on('click', 'select', function(e) {
   else if(limit > 0)
   {
     textfield = new UI.Text({size: new Vector2(140, 60), font: 'gothic-24-bold', text: count + "\n/" + limit, textAlign: 'center'});
-    radial = new UI.Radial({size: new Vector2(140, 140), angle: 0, angle2: 1, radius: 20, backgroundColor: 'cyan', borderColor: 'celeste', borderWidth: 1});
-  }
+    var angle = 1;
+    if(count > 0)
+      angle = count/limit * 360;
+    radial = new UI.Radial({size: new Vector2(140, 140), angle: 0, angle2: angle, radius: 20, backgroundColor: 'cyan', borderColor: 'celeste', borderWidth: 1});
+}
   
   var windSize = wind.size();
   
@@ -243,10 +263,20 @@ main.on('click', 'select', function(e) {
 // On clicking the down button from main screen
 main.on('click', 'down', function(e) {
   var windForm = new UI.Window({backgroundColor: 'dark-gray'});
+ 
+  selected = 1;
+  
+  var title = new UI.Text({position: new Vector2(0, 10), size: new Vector2(144, 80), font: 'gothic-24-bold', text: 'Set a limit', textAlign: 'center'});
+  var bottomTextfield = new UI.Text({position: new Vector2(0, 120), size: new Vector2(144, 70), font: 'gothic-18-bold', text: 'Set it to 0 to\ndelete limit.', textAlign: 'center'});
+  
+  
   // create a text area for each of the number input, selected one in light-gray
   var nbrHdrd = new UI.Text({backgroundColor: 'light-gray', position: new Vector2(10, 60), size: new Vector2(38, 40), font: 'bitham-30-black', text: hundred, textAlign: "center"});
   var nbrTens = new UI.Text({backgroundColor: 'black', position: new Vector2(52, 60), size: new Vector2(38, 40), font: 'bitham-30-black', text: tens, textAlign: "center"});
   var nbrDecs = new UI.Text({backgroundColor: 'black', position: new Vector2(94, 60), size: new Vector2(38, 40), font: 'bitham-30-black', text: decs, textAlign: "center"});
+
+  windForm.add(title);
+  windForm.add(bottomTextfield);
 
   windForm.add(nbrHdrd);
   windForm.add(nbrTens);
