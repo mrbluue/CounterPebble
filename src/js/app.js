@@ -152,33 +152,43 @@ main.on('click', 'up', function(e) {
   }
 
   menu.on('longSelect', function(e) {
-    // Only delete items that have not already been deleted
-    if(e.item.title != "Deleted")
+    console.log('test');
+    // Remove entry from arrays and from watch storage 
+    historyDate.splice(e.itemIndex, 1);
+    historyCounts.splice(e.itemIndex, 1);
+    Settings.data('historyDate', historyDate);
+    Settings.data('historyCounts', historyCounts);
+
+    // Show a confirmation window for item deletion
+    var windConfirm = new UI.Window({backgroundColor: 'black'});
+    var textConfirm = new UI.Text({size: new Vector2(140, 40), font: 'bitham-30-black', text: 'Deleted', textAlign: 'center'});
+    var windSize = menu.size(), textConfirmPos = textConfirm.position().addSelf(windSize).subSelf(textConfirm.size()).multiplyScalar(0.5);
+    textConfirm.position(textConfirmPos);
+    windConfirm.add(textConfirm);
+    windConfirm.show();
+    menu.hide();
+    
+    // Resetting the whole section of items in the menu
+    var section = {items: [{}]};
+    menu.section(0, section);
+
+    // Recreating every item, so that their item index matches their index in the array
+    var itemIndex = 0;
+    if(historyCounts && historyDate)
     {
-      // Remove entry from arrays and from watch storage 
-      historyDate.splice(e.itemIndex, 1);
-      historyCounts.splice(e.itemIndex, 1);
-      Settings.data('historyDate', historyDate);
-      Settings.data('historyCounts', historyCounts);
-      
-      // Show a confirmation window for item deletion
-      var windConfirm = new UI.Window({backgroundColor: 'black'});
-      var textConfirm = new UI.Text({size: new Vector2(140, 40), font: 'bitham-30-black', text: 'Deleted', textAlign: 'center'});
-      var windSize = menu.size(), textConfirmPos = textConfirm.position().addSelf(windSize).subSelf(textConfirm.size()).multiplyScalar(0.5);
-      textConfirm.position(textConfirmPos);
-      windConfirm.add(textConfirm);
-      windConfirm.show();
-      menu.hide();
-      
-      // Change deleted item's title to "Deleted"
-      menu.item(0, e.itemIndex, {title: 'Deleted', subtitle: ' '});
-      
-      // Go back to menu after a second
-      setTimeout(function(){
-        windConfirm.hide();
-        menu.show();
-      }, 1000);
+      // Adding an entry for the menu for each entry in historyCounts array
+      historyCounts.forEach(function(el) {
+        menu.item(0, itemIndex, {title: historyDate[itemIndex], subtitle: 'Counted: ' + el});
+        itemIndex++;
+      });
     }
+
+    // Go back to menu after a second
+    setTimeout(function(){
+      windConfirm.hide();
+      menu.show();
+    }, 1000);
+    
   });
   menu.show();
 });
@@ -251,14 +261,16 @@ main.on('click', 'select', function(e) {
   
   // add to history with long push on select button
   wind.on('longClick', 'select', function(e) {
-    var Hour = time.getHours() + ':' + time.getMinutes();
+    var Hour = time.getHours(); if(Hour <10) Hour = "0" + Hour;
+    var Minute = time.getMinutes(); if(Minute <10) Minute = "0" + Minute;
+    var HourMinute = Hour + ':' + Minute;
     var Month = time.getMonth() + 1;
     if(Month < 10)
       Month = "0" + Month;
     var Date = time.getDate() + '/' + Month + '/' + time.getFullYear().toString().substr(-2);
     
     // add Hour and Date to position 0 in historyDate array
-    historyDate.splice(0, 0, Hour + ' ' + Date);
+    historyDate.splice(0, 0, HourMinute + ' ' + Date);
     
     // adding count to poistion 0 in historyCounts with or without limit
     if(limit == 0)
