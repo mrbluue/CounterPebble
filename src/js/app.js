@@ -33,10 +33,12 @@ var hundred = 0, tens = 0, decs = 0, selected = 1;
 // Creating and showing the main window of the watchapp
 var main = new UI.Window({backgroundColor: 'black'});
 
+// Textfields
 var historyText = new UI.Text({position: new Vector2(-25, 0), size: new Vector2(140, 40), font: 'gothic-24-bold', text: 'History', textAlign: 'right'});
 var startText = new UI.Text({position: new Vector2(-25, 60), size: new Vector2(140, 40), font: 'gothic-24-bold', text: 'Start counting', textAlign: 'right'});
 var limitText = new UI.Text({position: new Vector2(-25, 120), size: new Vector2(140, 40), font: 'gothic-24-bold', text: 'Set a limit', textAlign: 'right'});
 
+// Icons
 var historyBttn = new UI.Image({position: new Vector2(120, 9), size: new Vector2(18, 18), image: 'images/buttonMenu.png'});
 var nextBttn = new UI.Image({position: new Vector2(120, 69), size: new Vector2(18, 18), image: 'images/buttonNext.png'});
 var limitBttn = new UI.Image({position: new Vector2(120, 129), size: new Vector2(18, 18), image: 'images/buttonLimit.png'});
@@ -73,7 +75,7 @@ function actionCount(action, wind, textfield, radial, textfieldPos, radialPos)
   Settings.data('count', count);
 }
 
-// Function called when we want to fill the form for the limit of counts. We only want single numbers in each number input 
+// Function called when we want to fill the form for the limit of counts. We only want 0-9 in each number input so we're exluding -1 and 10
 function actionForm(action, number, ui)
 {
   // For the hundreds
@@ -143,25 +145,33 @@ main.on('click', 'up', function(e) {
   }
 
   menu.on('longSelect', function(e) {
-    historyDate.splice(e.itemIndex, 1);
-    historyCounts.splice(e.itemIndex, 1);
-    Settings.data('historyDate', historyDate);
-    Settings.data('historyCounts', historyCounts);
-    
-    var windConfirm = new UI.Window({backgroundColor: 'black'});
-    var textConfirm = new UI.Text({size: new Vector2(140, 40), font: 'bitham-30-black', text: 'Deleted', textAlign: 'center'});
-    var windSize = menu.size(), textConfirmPos = textConfirm.position().addSelf(windSize).subSelf(textConfirm.size()).multiplyScalar(0.5);
-    textConfirm.position(textConfirmPos);
-    windConfirm.add(textConfirm);
-    windConfirm.show();
-    menu.hide();
-
-    menu.item(0, e.itemIndex, {title: 'Deleted', subtitle: ' '});
-    
-    setTimeout(function(){
-      windConfirm.hide();
-      menu.show();
-    }, 1000);
+    // Only delete items that have not already been deleted
+    if(e.item.title != "Deleted")
+    {
+      // Remove entry from arrays and from watch storage 
+      historyDate.splice(e.itemIndex, 1);
+      historyCounts.splice(e.itemIndex, 1);
+      Settings.data('historyDate', historyDate);
+      Settings.data('historyCounts', historyCounts);
+      
+      // Show a confirmation window for item deletion
+      var windConfirm = new UI.Window({backgroundColor: 'black'});
+      var textConfirm = new UI.Text({size: new Vector2(140, 40), font: 'bitham-30-black', text: 'Deleted', textAlign: 'center'});
+      var windSize = menu.size(), textConfirmPos = textConfirm.position().addSelf(windSize).subSelf(textConfirm.size()).multiplyScalar(0.5);
+      textConfirm.position(textConfirmPos);
+      windConfirm.add(textConfirm);
+      windConfirm.show();
+      menu.hide();
+      
+      // Change deleted item's title to "Deleted"
+      menu.item(0, e.itemIndex, {title: 'Deleted', subtitle: ' '});
+      
+      // Go back to menu after a second
+      setTimeout(function(){
+        windConfirm.hide();
+        menu.show();
+      }, 1000);
+    }
   });
   menu.show();
 });
@@ -172,16 +182,20 @@ main.on('click', 'select', function(e) {
   var textfield = new UI.Text();
   var radial = new UI.Radial();
     
-  // if there's no limit
+  // if there's no limit create bigger textfield and full gray circle
   if(limit == 0)
   {
     textfield = new UI.Text({size: new Vector2(140, 40), font: 'bitham-30-black', text: count, textAlign: 'center'});
     radial = new UI.Radial({size: new Vector2(140, 140), angle: 0, angle2: 360, radius: 20, backgroundColor: 'light-gray',});
   }
+  // if there is a limit, create a smaller textfield and show radial with correct angle
   else if(limit > 0)
   {
     textfield = new UI.Text({size: new Vector2(140, 60), font: 'gothic-24-bold', text: count + "\n/" + limit, textAlign: 'center'});
+    
     var angle = 1;
+    
+    // if we already started counting, show the correct radial
     if(count > 0)
       angle = count/limit * 360;
     radial = new UI.Radial({size: new Vector2(140, 140), angle: 0, angle2: angle, radius: 20, backgroundColor: 'cyan', borderColor: 'celeste', borderWidth: 1});
@@ -264,11 +278,12 @@ main.on('click', 'select', function(e) {
 main.on('click', 'down', function(e) {
   var windForm = new UI.Window({backgroundColor: 'dark-gray'});
  
+  // whenever we arrive on this window, the selected input should be the first
   selected = 1;
   
+  // textfields
   var title = new UI.Text({position: new Vector2(0, 10), size: new Vector2(144, 80), font: 'gothic-24-bold', text: 'Set a limit', textAlign: 'center'});
   var bottomTextfield = new UI.Text({position: new Vector2(0, 120), size: new Vector2(144, 70), font: 'gothic-18-bold', text: 'Set it to 0 to\ndelete limit.', textAlign: 'center'});
-  
   
   // create a text area for each of the number input, selected one in light-gray
   var nbrHdrd = new UI.Text({backgroundColor: 'light-gray', position: new Vector2(10, 60), size: new Vector2(38, 40), font: 'bitham-30-black', text: hundred, textAlign: "center"});
@@ -281,6 +296,7 @@ main.on('click', 'down', function(e) {
   windForm.add(nbrHdrd);
   windForm.add(nbrTens);
   windForm.add(nbrDecs);
+  
   windForm.show();
   
   // change selected number on clicking select, selected == 2 -> tens, selected == 3 -> decs, selected == 4 -> set limit and exit
