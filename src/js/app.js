@@ -1,5 +1,7 @@
 var UI = require('ui');
 var Vector2 = require('vector2');
+// TODO chalk compatibility
+// var Feature = require('platform/feature');
 var Settings = require('settings');
 var time = new Date();
 
@@ -57,13 +59,18 @@ function actionCount(action, wind, textfield, radial, textfieldPos, radialPos)
   // Substract to the count when told to. Forbidding to go under 0. If not substracting, then adding.
   if(action == "substract" && count > 0)
     count--;
-  else if (action == "add" && count < limit)
+  else if (action == "add" && (count < limit && limit > 0))
     count++;
-  
+  else if(action == "add" && limit == 0)
+    count++;
+
   // If there's no limit (limit = 0) or if there is a limit, show the count without or with the limit
   if(limit == 0)
+  {
+    console.log('test');
     textfield.text(count);
-  else if(limit > 0 && count <= limit)
+  }
+  else if(limit > 0)
   {
     //show count and limit
     textfield.text(count + "\n/" + limit);
